@@ -38,15 +38,18 @@ class ManagerServiceTest {
     @InjectMocks
     private ManagerService managerService;
 
+    // 1. 메서드명을 NPE가 아닌 알맞은 이름으로 변경
     @Test
-    public void manager_목록_조회_시_Todo가_없다면_NPE_에러를_던진다() {
+    public void manager_목록_조회_시_Todo가_없다면_예외를_던진다() {
         // given
         long todoId = 1L;
         given(todoRepository.findById(todoId)).willReturn(Optional.empty());
 
         // when & then
         InvalidRequestException exception = assertThrows(InvalidRequestException.class, () -> managerService.getManagers(todoId));
-        assertEquals("Manager not found", exception.getMessage());
+
+        // 2. 에러 메시지를 "Todo not found"로 변경
+        assertEquals("Todo not found", exception.getMessage());
     }
 
     @Test
