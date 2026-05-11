@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.3'
     id 'io.spring.dependency-management' version '1.1.6'
+    id 'jacoco' // Jacoco
 }
 
 group = 'org.example'
@@ -46,4 +47,31 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+jacoco {
+    toolVersion = "0.8.11" // 최신 안정 버전
+}
+
+// 테스트 리포트 생성 설정
+jacocoTestReport {
+    dependsOn test // 테스트가 수행되어야 리포트가 생성됨
+    reports {
+        html.required = true // 웹브라우저로 볼 수 있는 HTML 리포트 생성
+        xml.required = true
+    }
+}
+
+// 테스트 결과가 기준에 못 미치면 빌드 실패하게 설정 (선택사항)
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            element = 'CLASS'
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.50 // 최소 50%는 넘겨야 한다고 가정 (조정 가능)
+            }
+        }
+    }
 }

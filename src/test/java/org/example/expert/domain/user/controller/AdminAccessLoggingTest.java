@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -56,5 +57,19 @@ class AdminAccessLoggingTest {
                         .content(jsonRequest)
                         .requestAttr("userId", 100L)) // AOP 로깅용
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void 어드민_댓글_삭제_API_호출_시_AOP_로그가_남는지_확인한다() throws Exception {
+        // given
+        long commentId = 1L;
+
+        // when & then
+        mockMvc.perform(delete("/admin/comments/{commentId}", commentId)
+                        .requestAttr("userId", 100L)      // AOP에서 읽어갈 요청자 ID
+                        .requestAttr("userRole", "ADMIN")) // 어드민 권한 설정
+                .andExpect(status().isOk());
+
+        // 💡 실행 후 콘솔에서 ::: Admin API Access Log ::: 가 찍혔는지 확인하세요!
     }
 }
