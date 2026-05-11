@@ -26,12 +26,14 @@ public class WeatherClient {
         ResponseEntity<WeatherDto[]> responseEntity =
                 restTemplate.getForEntity(buildWeatherApiUri(), WeatherDto[].class);
 
-        WeatherDto[] weatherArray = responseEntity.getBody();
-
-        // 1. 상태 코드가 OK가 아니면 즉시 예외 발생 (Early Return)
-        if (!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
-            throw new ServerException("날씨 데이터를 가져오는데 실패했습니다. 상태 코드: " + responseEntity.getStatusCode());
+        try {
+            responseEntity = restTemplate.getForEntity(buildWeatherApiUri(), WeatherDto[].class);
+        } catch (Exception e) {
+            // RestTemplate이 던지는 4xx, 5xx 예외를 여기서 가로채서 우리 에러로 변환!
+            throw new ServerException("날씨 데이터를 가져오는데 실패했습니다. 원인: " + e.getMessage());
         }
+
+        WeatherDto[] weatherArray = responseEntity.getBody();
 
         // 2. 불필요한 else 블록 제거 후, 정상 응답일 경우의 검증 로직 수행
         if (weatherArray == null || weatherArray.length == 0) {
