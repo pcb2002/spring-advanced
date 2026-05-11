@@ -43,3 +43,4 @@
 ## Lv 7. 테스트 커버리지
 
 file:///C:/Users/PMS/IdeaProjects/spring-advanced/htmlReport/index.html
+<img width="2559" height="1322" alt="image" src="https://github.com/user-attachments/assets/119fb52a-948b-4ce1-9c09-b0716c52305a" />
